@@ -38,3 +38,29 @@ class TrafficLight:
         return self._location
 
 
+# =============================================================================
+# PERSON 2 - Named locations
+# Stores each light at a required, non-empty named location.
+# =============================================================================
+
+    @property
+    def colour(self) -> Colour:
+        return self._colour
+
+    def set_colour(self, colour: Colour | str) -> None:
+        """Set a valid colour, ignoring letter case and surrounding spaces."""
+        if isinstance(colour, str):
+            try:
+                colour = Colour(colour.strip().lower())
+            except ValueError as error:
+                raise InvalidColourError(
+                    f"Invalid colour: {colour!r}. Choose RED, AMBER, or GREEN."
+                ) from error
+        elif not isinstance(colour, Colour):
+            raise InvalidColourError(
+                f"Invalid colour: {colour!r}. Choose RED, AMBER, or GREEN."
+            )
+
+        self._colour = colour
+
+
