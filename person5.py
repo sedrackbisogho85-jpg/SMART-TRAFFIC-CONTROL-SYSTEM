@@ -168,3 +168,13 @@ class TrafficLight:
         return f"{self.location}: {self.colour} ({instruction})"
 
 
+# =============================================================================
+# PERSON 5 - Multiple lights
+# Displays the states of at least two TrafficLight objects.
+# =============================================================================
+
+def print_lights(lights: list[TrafficLight]) -> None:
+    for light in lights:
+        print(light.describe())
+
+
