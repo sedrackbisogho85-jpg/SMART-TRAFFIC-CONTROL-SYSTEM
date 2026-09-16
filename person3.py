@@ -1,11 +1,3 @@
-"""
-MUKISA ERIC WILLIAMS      S25B38/025
-NGOBI JONAH               S25B38/043
-BWAMBALE BISOGHO SEDRACK  S25B38/038
-TALWANA GRACE MERCY       M25B38/002
-KAMARUNGA TABITHA JUDITH  M25B38/003
-NAKITTO FAVOUR NULLIAT    M25B38/044
-"""
 """Simple software-controlled traffic lights for a campus junction."""
 
 from enum import Enum
@@ -79,58 +71,18 @@ class TrafficLight:
 
     def advance(self) -> None:
         """Move red to green, green to amber, or amber to red."""
+        # Find where the current colour sits in the defined cycle sequence.
+        # For example, if self.colour is "green" and _CYCLE is ["red", "green", "amber"],
+        # this returns 1 (the index of "green").
         current_index = self._CYCLE.index(self.colour)
+        
+        # Work out the index of the next colour in the cycle.
+        # Adding 1 moves us forward by one position.
+        # The len(self._CYCLE) wraps the index back to 0
+        # when we reach the end, so "amber" loops back to "red" automatically.
         next_index = (current_index + 1) % len(self._CYCLE)
+        
+        # Update the traffic light's colour to the next one in the sequence.
+        # This is the only state change in the method — everything else is
+        # just calculation to determine what that new colour should be.
         self._colour = self._CYCLE[next_index]
-
-
-# =============================================================================
-# PERSON 4 - Stop status and descriptions
-# Tells road users whether the light means STOP and describes its state.
-# =============================================================================
-
-    def is_stop(self) -> bool:
-        """Return whether this light currently means stop."""
-        return self.colour in (Colour.RED, Colour.AMBER)
-
-    def describe(self) -> str:
-        """Return the light's location, colour, and traffic instruction."""
-        instruction = "STOP" if self.is_stop() else "GO"
-        return f"{self.location}: {self.colour} ({instruction})"
-
-
-# =============================================================================
-# PERSON 5 - Multiple lights
-# Displays the states of at least two TrafficLight objects.
-# =============================================================================
-
-def print_lights(lights: list[TrafficLight]) -> None:
-    for light in lights:
-        print(light.describe())
-
-
-# =============================================================================
-# PERSON 6 - Invalid-colour demonstration
-# Attempts an invalid colour and shows that the program refuses it.
-# =============================================================================
-
-
-if __name__ == "__main__":
-    main_gate = TrafficLight("Main Gate / Chapel Road")
-    library = TrafficLight("Library / Science Road", Colour.GREEN)
-    lights = [main_gate, library]
-
-    print("Initial states:")
-    print_lights(lights)
-
-    print("\nAfter advancing through the cycle:")
-    for _ in range(3):
-        for light in lights:
-            light.advance()
-        print_lights(lights)
-
-    print("\nAutomatic invalid-colour check:")
-    try:
-        main_gate.set_colour("blue")
-    except InvalidColourError as error:
-        print(f"Rejected: {error}")
