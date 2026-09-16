@@ -298,3 +298,70 @@ Junction.save = _save_junction
 Junction.load = _load_junction
 
 
+# =============================================================================
+# DEMONSTRATION – Full system in action
+# This section is used both for marking and for live lecture demos.
+# =============================================================================
+
+if __name__ == "__main__":
+    print("=" * 60)
+    print("SMART JUNCTION – FULL DEMONSTRATION")
+    print("=" * 60)
+
+    campus = Junction("Main Campus Junction")
+
+    gate = TrafficLight("Main Gate / Chapel Road")
+    library = TrafficLight("Library / Science Road")
+    campus.add_light(gate)
+    campus.add_light(library)
+
+    print("\n1. Initial state (both lights start RED):")
+    print(campus.status_report())
+
+    print("\n2. Advancing lights and using relationship methods:")
+    gate.advance()
+    library.advance()
+    library.advance()
+    print(campus.status_report())
+    print(f"Lights currently showing STOP: {campus.stop_count()}")
+
+    print("\n3. Adding specialised lights (Inheritance):")
+    pedestrian = PedestrianLight("Library Crossing")
+    emergency = EmergencyLight("Hospital Approach")
+    campus.add_light(pedestrian)
+    campus.add_light(emergency)
+    print(campus.status_report())
+
+    print("\n4. Polymorphism – treating all lights the same way:")
+    print("Advancing EVERY light (each type responds differently):")
+    campus.advance_all()
+    print(campus.status_report())
+
+    print("\nActivating emergency mode on the emergency light:")
+    emergency.activate_emergency()
+    print(campus.status_report())
+
+    print("\n5. Exception handling:")
+    try:
+        gate.set_colour("BLUE")
+    except InvalidColourError as e:
+        print(f"  Caught InvalidColourError: {e}")
+
+    try:
+        campus.remove_light("Non-existent Road")
+    except LightNotFoundError as e:
+        print(f"  Caught LightNotFoundError: {e}")
+
+    print("\n6. Persistence (save / load):")
+    campus.save("campus_junction.json")
+    gate.advance()
+    print("\nState AFTER saving and then changing a light:")
+    print(campus.status_report())
+
+    restored = Junction.load("campus_junction.json")
+    print("\nRestored junction (should match the state at the moment of saving):")
+    print(restored.status_report())
+
+    print("\n" + "=" * 60)
+    print("Demonstration complete.")
+    print("=" * 60)
